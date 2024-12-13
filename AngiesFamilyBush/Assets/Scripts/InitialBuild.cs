@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class InitialBuild : MonoBehaviour
@@ -6,7 +7,9 @@ public class InitialBuild : MonoBehaviour
 
     public GameObject girlTemplate;
     public GameObject boyTemplate;
+    
     public GameObject marriedTemplate;
+    public GameObject childLinkTemplate;
 
     public float initialWidthForPair; // 3
 
@@ -33,7 +36,9 @@ public class InitialBuild : MonoBehaviour
                 + (initialWidthForPair + margin) * i
                 - fullWidth / 2
                 + xOfTheMiddle;
-            BuildPair(initialWidthForPair, 5, xForMiddle);
+            var pair = BuildPair(initialWidthForPair, 5, xForMiddle);
+
+            BuildChildLink(pair);
         }
     }
 
@@ -55,7 +60,8 @@ public class InitialBuild : MonoBehaviour
                  + (witdthForPair + margin * 3) * i
                 - fullWidth / 2
                 + xOfTheMiddle;
-            BuildPair(witdthForPair, 3, xForMiddle);
+            var pair = BuildPair(witdthForPair, 3, xForMiddle);
+            BuildChildLink(pair);
         }
     }
 
@@ -81,7 +87,7 @@ public class InitialBuild : MonoBehaviour
         }
     }
 
-    private void BuildPair(float fullWidth, int y, float xForMiddle)
+    private GameObject BuildPair(float fullWidth, int y, float xForMiddle)
     {
         var pair = new GameObject($"Pair [{xForMiddle},{y}]");
         pair.transform.position = new Vector3(xForMiddle, y, 0);
@@ -92,14 +98,14 @@ public class InitialBuild : MonoBehaviour
         var girl = Instantiate(girlTemplate);
         girl.transform.SetParent(pair.transform);
         girl.transform.localPosition = new Vector3(
-            0 - halfOfWidth,
+            0 - halfOfWidth + widthOfTheItem / 2,
             0,
             0);
 
         var boy = Instantiate(boyTemplate);
         boy.transform.SetParent(pair.transform);
         boy.transform.localPosition = new Vector3(
-            halfOfWidth - widthOfTheItem,
+            halfOfWidth - widthOfTheItem / 2,
             0,
             0);
 
@@ -107,12 +113,22 @@ public class InitialBuild : MonoBehaviour
         married.transform.SetParent(pair.transform);
 
         married.transform.localPosition = new Vector3(
-            -widthOfTheItem / 2,
+            0,
             0,
             0);
         married.transform.localScale = new Vector3(
             0.1f,
             (fullWidth - widthOfTheItem) / 2,
             0.1f);
+
+        return pair;
+    }
+
+    private void BuildChildLink(GameObject pair)
+    {
+        var childLink = Instantiate(childLinkTemplate);
+        childLink.transform.SetParent(pair.transform);
+
+        childLink.transform.localPosition = new Vector3(0, -1, 0);
     }
 }
